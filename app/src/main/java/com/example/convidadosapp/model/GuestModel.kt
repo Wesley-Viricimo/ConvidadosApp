@@ -1,4 +1,4 @@
-package com.example.convidadosapp
+package com.example.convidadosapp.model
 
 data class GuestModel(
     val id: Int,

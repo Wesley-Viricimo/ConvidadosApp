@@ -1,6 +1,8 @@
 package com.example.convidadosapp.repository
 
+import android.content.ContentValues
 import android.content.Context
+import com.example.convidadosapp.model.GuestModel
 
 class GuestRepository private constructor(context: Context) { //Construtor fechado, a classe não poderá ser instânciada
 
@@ -19,8 +21,16 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
         }
     }
 
-    fun save() {
+    fun insert(guest : GuestModel) {
+        val db = guestDataBase.writableDatabase
 
+        val presence = if (guest.presence) 1 else 0
+
+        val values = ContentValues()
+        values.put("name", guest.name)
+        values.put("presence", presence)
+
+        db.insert("Guest", null, values)
     }
 
     fun update() {

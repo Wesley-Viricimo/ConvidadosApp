@@ -21,16 +21,21 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
         }
     }
 
-    fun insert(guest : GuestModel) {
-        val db = guestDataBase.writableDatabase
+    fun insert(guest : GuestModel) : Boolean {
+        return try {
+            val db = guestDataBase.writableDatabase
 
-        val presence = if (guest.presence) 1 else 0
+            val presence = if (guest.presence) 1 else 0
 
-        val values = ContentValues()
-        values.put("name", guest.name)
-        values.put("presence", presence)
+            val values = ContentValues()
+            values.put("name", guest.name)
+            values.put("presence", presence)
 
-        db.insert("Guest", null, values)
+            db.insert("Guest", null, values) //Primeiro parâmetro é  nome da tabela, segundo é a coluna que permitirá nulos e o terceiro são os valores da tabela
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     fun update() {

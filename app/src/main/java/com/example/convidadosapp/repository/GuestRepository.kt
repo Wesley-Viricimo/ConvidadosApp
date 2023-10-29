@@ -2,6 +2,7 @@ package com.example.convidadosapp.repository
 
 import android.content.ContentValues
 import android.content.Context
+import com.example.convidadosapp.constants.DatabaseConstants
 import com.example.convidadosapp.model.GuestModel
 
 class GuestRepository private constructor(context: Context) { //Construtor fechado, a classe não poderá ser instânciada
@@ -28,8 +29,8 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
             val presence = if (guest.presence) 1 else 0
 
             val values = ContentValues()
-            values.put("name", guest.name)
-            values.put("presence", presence)
+            values.put(DatabaseConstants.GUEST.COLUMNS.NAME, guest.name)
+            values.put(DatabaseConstants.GUEST.COLUMNS.PRESENCE, presence)
 
             db.insert("Guest", null, values) //Primeiro parâmetro é  nome da tabela, segundo é a coluna que permitirá nulos e o terceiro são os valores da tabela
             true

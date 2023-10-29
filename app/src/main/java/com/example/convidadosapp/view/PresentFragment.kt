@@ -1,4 +1,4 @@
-package com.example.convidadosapp.ui
+package com.example.convidadosapp.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.convidadosapp.databinding.FragmentAllGuestsBinding
+import com.example.convidadosapp.databinding.FragmentPresentBinding
+import com.example.convidadosapp.viewmodel.PresentViewModel
 
-class AllGuestFragment : Fragment() {
+class PresentFragment : Fragment() {
 
-    private var _binding: FragmentAllGuestsBinding? = null
+    private var _binding: FragmentPresentBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +23,14 @@ class AllGuestFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val allGuestsModel =
-            ViewModelProvider(this).get(AllGuestsModel::class.java)
+        val presentViewModel =
+            ViewModelProvider(this).get(PresentViewModel::class.java)
 
-        _binding = FragmentAllGuestsBinding.inflate(inflater, container, false)
+        _binding = FragmentPresentBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        allGuestsModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textGallery
+        presentViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

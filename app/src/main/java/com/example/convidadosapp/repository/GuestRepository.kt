@@ -62,4 +62,21 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
         }
 
     }
+
+    fun delete(guestId : Int) : Boolean {
+
+        return try {
+            val db = guestDataBase.writableDatabase
+
+            val selection = DatabaseConstants.GUEST.COLUMNS.ID + " = ?" //Serão atualizados os registros onde o id for igual ao id informado por parâmetro
+            val args = arrayOf(guestId.toString()) //Através dos argumentos que serão atualizados os registros, ou seja, será atualizado todos os registros onde o id for igual ao id informado pelo usuário
+
+            db.delete(DatabaseConstants.GUEST.TABLE_NAME, selection, args) //Para executar um update é necessário informar como argumento o nome da tabela, os valores que serão atualizados, a seleção e os arumentos
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+
+    }
 }

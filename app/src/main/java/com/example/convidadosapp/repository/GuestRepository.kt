@@ -35,11 +35,31 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
             db.insert("Guest", null, values) //Primeiro parâmetro é  nome da tabela, segundo é a coluna que permitirá nulos e o terceiro são os valores da tabela
             true
         } catch (e: Exception) {
+            e.printStackTrace()
             false
         }
     }
 
-    fun update() {
+    fun update(guest : GuestModel) : Boolean {
+
+        return try {
+            val db = guestDataBase.writableDatabase
+
+            val presence = if (guest.presence) 1 else 0
+
+            val values = ContentValues()
+            values.put(DatabaseConstants.GUEST.COLUMNS.NAME, guest.name)
+            values.put(DatabaseConstants.GUEST.COLUMNS.PRESENCE, presence)
+
+            val selection = DatabaseConstants.GUEST.COLUMNS.ID + " = ?" //Serão atualizados os registros onde o id for igual ao id informado por parâmetro
+            val args = arrayOf(guest.id.toString()) //Através dos argumentos que serão atualizados os registros, ou seja, será atualizado todos os registros onde o id for igual ao id informado pelo usuário
+
+            db.update(DatabaseConstants.GUEST.TABLE_NAME, values, selection, args) //Para executar um update é necessário informar como argumento o nome da tabela, os valores que serão atualizados, a seleção e os arumentos
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
 
     }
 }

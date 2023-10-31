@@ -66,7 +66,7 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
     fun delete(guestId : Int) : Boolean {
 
         return try {
-            val db = guestDataBase.writableDatabase
+            val db = guestDataBase.writableDatabase //writableDatabase serve para escrever no banco de dados, ou seja, operações de insert, update e delete
 
             val selection = DatabaseConstants.GUEST.COLUMNS.ID + " = ?" //Serão atualizados os registros onde o id for igual ao id informado por parâmetro
             val args = arrayOf(guestId.toString()) //Através dos argumentos que serão atualizados os registros, ou seja, será atualizado todos os registros onde o id for igual ao id informado pelo usuário
@@ -77,6 +77,42 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
             e.printStackTrace()
             false
         }
-
     }
+
+    fun getAll() : List<GuestModel> {
+        val list = mutableListOf<GuestModel>()
+
+        try {
+            val db = guestDataBase.readableDatabase //readableDatabase serve para operações de leitura do banco de dados, ou seja, select
+            val selection = arrayOf(
+                DatabaseConstants.GUEST.COLUMNS.ID,
+                DatabaseConstants.GUEST.COLUMNS.NAME,
+                DatabaseConstants.GUEST.COLUMNS.PRESENCE
+            )
+
+            val cursor = db.query(
+                DatabaseConstants.GUEST.TABLE_NAME, //Nome da tabela
+                selection,                          //Quais as colunas que serão selecionadas
+                null,                       //Selection nulo
+                null,                    //Argumentos de seleção nulos
+                null,                       //Group by nulo
+                null,                        //Cláusulá having nula
+                null)                       //Order by nulo
+
+            if (cursor != null && cursor.count > 0) {
+                while (cursor.moveToNext()) {
+                    val id = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.ID))
+                    val name = cursor.getString(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
+                    val presence = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
+
+                    list.add(GuestModel(id, name, presence == 1))
+                }
+            }
+            cursor.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return list
+    }
+
 }

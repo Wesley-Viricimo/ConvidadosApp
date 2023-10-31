@@ -84,7 +84,7 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
 
         try {
             val db = guestDataBase.readableDatabase //readableDatabase serve para operações de leitura do banco de dados, ou seja, select
-            val selection = arrayOf(
+            val projection = arrayOf(
                 DatabaseConstants.GUEST.COLUMNS.ID,
                 DatabaseConstants.GUEST.COLUMNS.NAME,
                 DatabaseConstants.GUEST.COLUMNS.PRESENCE
@@ -92,9 +92,93 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
 
             val cursor = db.query(
                 DatabaseConstants.GUEST.TABLE_NAME, //Nome da tabela
-                selection,                          //Quais as colunas que serão selecionadas
+                projection,                          //Quais as colunas que serão selecionadas
                 null,                       //Selection nulo
                 null,                    //Argumentos de seleção nulos
+                null,                       //Group by nulo
+                null,                        //Cláusulá having nula
+                null)                       //Order by nulo
+
+            if (cursor != null && cursor.count > 0) {
+                while (cursor.moveToNext()) {
+                    val id = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.ID))
+                    val name = cursor.getString(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
+                    val presence = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
+
+                    list.add(GuestModel(id, name, presence == 1))
+                }
+            }
+            cursor.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return list
+    }
+
+    fun getPresent() : List<GuestModel> {
+        val list = mutableListOf<GuestModel>()
+
+        try {
+            val db = guestDataBase.readableDatabase //readableDatabase serve para operações de leitura do banco de dados, ou seja, select
+            val projection = arrayOf(
+                DatabaseConstants.GUEST.COLUMNS.ID,
+                DatabaseConstants.GUEST.COLUMNS.NAME,
+                DatabaseConstants.GUEST.COLUMNS.PRESENCE
+            )
+
+            //Da pra fazer um select puro também
+            //val cursor2 = db.rawQuery("SELECT id, name, presence FROM Guest WHERE presence = 1", null)
+
+            val selection = DatabaseConstants.GUEST.COLUMNS.PRESENCE + " = ?" //Selection = where -> Selecionar os convidados onde a presença
+            val args = arrayOf("1")                                           // = 1
+
+            val cursor = db.query(
+                DatabaseConstants.GUEST.TABLE_NAME, //Nome da tabela
+                projection,                         //Quais as colunas que serão selecionadas
+                selection,                          //Selection nulo
+                args,                               //Argumentos de seleção nulos
+                null,                       //Group by nulo
+                null,                        //Cláusulá having nula
+                null)                       //Order by nulo
+
+            if (cursor != null && cursor.count > 0) {
+                while (cursor.moveToNext()) {
+                    val id = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.ID))
+                    val name = cursor.getString(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
+                    val presence = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
+
+                    list.add(GuestModel(id, name, presence == 1))
+                }
+            }
+            cursor.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return list
+    }
+
+    fun getAbsent() : List<GuestModel> {
+        val list = mutableListOf<GuestModel>()
+
+        try {
+            val db = guestDataBase.readableDatabase //readableDatabase serve para operações de leitura do banco de dados, ou seja, select
+            val projection = arrayOf(
+                DatabaseConstants.GUEST.COLUMNS.ID,
+                DatabaseConstants.GUEST.COLUMNS.NAME,
+                DatabaseConstants.GUEST.COLUMNS.PRESENCE
+            )
+
+            //Da pra fazer um select puro também
+            //val cursor2 = db.rawQuery("SELECT id, name, presence FROM Guest WHERE presence = 1", null)
+
+            val selection = DatabaseConstants.GUEST.COLUMNS.PRESENCE + " = ?" //Selection = where -> Selecionar os convidados onde a presença
+            val args = arrayOf("0")                                           // = 1
+
+            val cursor = db.query(
+                DatabaseConstants.GUEST.TABLE_NAME, //Nome da tabela
+                projection,                         //Quais as colunas que serão selecionadas
+                selection,                          //Selection nulo
+                args,                               //Argumentos de seleção nulos
                 null,                       //Group by nulo
                 null,                        //Cláusulá having nula
                 null)                       //Order by nulo

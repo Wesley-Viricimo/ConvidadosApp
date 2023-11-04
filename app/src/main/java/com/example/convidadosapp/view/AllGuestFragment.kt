@@ -33,12 +33,13 @@ class AllGuestFragment : Fragment() {
         binding.recyclerAllGuests.adapter = adapter
 
         val listener = object : OnGuestListener { //Classe anônima
-            override fun onClick(id: Int) {
+            override fun onClick(id: Int) { //Recebendo o id da view holder
                 Toast.makeText(context, "Teste", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onDelete(id: Int) {
-
+            override fun onDelete(id: Int) { //Recebendo o id da view holder
+                viewModel.delete(id)
+                viewModel.getAll() //Atualizar a lista de convidados após deletar
             }
 
         }

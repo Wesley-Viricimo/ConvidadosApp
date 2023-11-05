@@ -66,6 +66,11 @@ class AllGuestFragment : Fragment() {
         _binding = null
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAll() //Quando usuário sair da activity e posteriormente retornar para ela deve fazer uma busca novamente
+    }
+
     private fun observe() {
         viewModel.guests.observe(viewLifecycleOwner) {
             adapter.updateGuests(it)

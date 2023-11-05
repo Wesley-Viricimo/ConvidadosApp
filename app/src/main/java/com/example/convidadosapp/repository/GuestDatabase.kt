@@ -1,25 +1,42 @@
 package com.example.convidadosapp.repository
 
 import android.content.Context
-import android.database.sqlite.SQLiteDatabase
-import android.database.sqlite.SQLiteOpenHelper
-import com.example.convidadosapp.constants.DatabaseConstants
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.convidadosapp.model.GuestModel
 
-class GuestDatabase(context: Context) : SQLiteOpenHelper(context, NAME, null, VERSION) {
+@Database(entities = [GuestModel::class], version = 1)
+abstract class GuestDatabase : RoomDatabase() {
+
+    abstract fun guestDAO(): GuestDAO
 
     companion object {
-        private const val NAME = "guestdb"
-        private const val VERSION = 1
-    }
+        // Singleton - Conceito de singleton é basicamente controlar o número de instâncias de uma classe
+        private lateinit var INSTANCE: GuestDatabase
+        fun getDatabase(context: Context): GuestDatabase {
+            if (!::INSTANCE.isInitialized) {
+                synchronized(GuestDatabase::class) { //Função evita que duas threads executem o mesmo trecho de código ao mesmo tempo
+                    INSTANCE = Room.databaseBuilder(
+                        context,
+                        GuestDatabase::class.java,
+                        "guestDB"
+                    ) //Instância de Room.databasebuilder pede um contexto, a classe que será utilizada e o nome do banco de dados
+                        .addMigrations(MIGRATION_1_2)
+                        .allowMainThreadQueries() //Permitir consultas ao banco na thread principal
+                        .build()
+                }
+            }
+            return INSTANCE
+        }
 
-    override fun onCreate(db: SQLiteDatabase) { //Criação do banco - OnCreate é executado apenas uma vez no projeto
-        db.execSQL("CREATE TABLE " + DatabaseConstants.GUEST.TABLE_NAME +" ( " +
-        DatabaseConstants.GUEST.COLUMNS.ID + " integer primary key autoincrement, " +
-        DatabaseConstants.GUEST.COLUMNS.NAME + " text, " +
-        DatabaseConstants.GUEST.COLUMNS.PRESENCE+ " integer);")
-    }
-
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) { //Executa atualizações no banco de dados do usuário
+        private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("DELETE FROM Guest")
+            }
+        }
 
     }
 

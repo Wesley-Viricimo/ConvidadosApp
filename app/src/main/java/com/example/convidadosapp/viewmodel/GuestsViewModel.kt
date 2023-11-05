@@ -9,7 +9,7 @@ import com.example.convidadosapp.repository.GuestRepository
 
 class GuestsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: GuestRepository = GuestRepository.getInstance(application.applicationContext)
+    private val repository: GuestRepository = GuestRepository(application.applicationContext)
 
     private val listAllGuests = MutableLiveData<List<GuestModel>>() //Preparando a variável para receber um lista mutável de convidados
     val guests: LiveData<List<GuestModel>> = listAllGuests //Recebendo a lista utilizando LiveData para ser utilizado o observável

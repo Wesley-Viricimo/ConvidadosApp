@@ -10,7 +10,7 @@ import com.example.convidadosapp.repository.GuestRepository
 
 class GuestFormViewModel(application: Application) : AndroidViewModel(application) { //Android view model pode ser utilizado quando o contexto é necessário
 
-    private val repository = GuestRepository.getInstance(application)
+    private val repository = GuestRepository(application)
 
     private val guestModel = MutableLiveData<GuestModel>()
     val guest: LiveData<GuestModel> = guestModel

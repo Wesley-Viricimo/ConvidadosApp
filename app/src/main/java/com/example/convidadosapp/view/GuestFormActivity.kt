@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.convidadosapp.R
@@ -39,8 +40,6 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
             val model = GuestModel(guestId, name, presence) //Se for a criação de convidado o guestId será 0
 
             viewModel.save(model)
-
-            finish()
         }
     }
 
@@ -51,6 +50,19 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
                 binding.radioPresent.isChecked = true
             } else {
                 binding.radioAbsent.isChecked = true
+            }
+        })
+
+        viewModel.saveGuest.observe(this, Observer{
+            if (it != "") {
+                Toast.makeText(applicationContext, it, Toast.LENGTH_SHORT).show()
+                finish()
+            } else {
+                if (guestId == 0) {
+                    Toast.makeText(applicationContext, "Houve falha na inserção", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(applicationContext, "Houve falha na atualização", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }

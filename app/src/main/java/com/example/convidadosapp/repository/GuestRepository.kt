@@ -135,8 +135,8 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
             val cursor = db.query(
                 DatabaseConstants.GUEST.TABLE_NAME, //Nome da tabela
                 projection,                         //Quais as colunas que serão selecionadas
-                selection,                          //Selection nulo
-                args,                               //Argumentos de seleção nulos
+                selection,
+                args,
                 null,                       //Group by nulo
                 null,                        //Cláusulá having nula
                 null)                       //Order by nulo
@@ -145,7 +145,7 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
                 while (cursor.moveToNext()) {
                     val id = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.ID))
                     val name = cursor.getString(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
-                    val presence = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
+                    val presence = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.PRESENCE))
 
                     list.add(GuestModel(id, name, presence == 1))
                 }
@@ -172,12 +172,12 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
             //val cursor2 = db.rawQuery("SELECT id, name, presence FROM Guest WHERE presence = 1", null)
 
             val selection = DatabaseConstants.GUEST.COLUMNS.PRESENCE + " = ?" //Selection = where -> Selecionar os convidados onde a presença
-            val args = arrayOf("0")                                           // = 1
+            val args = arrayOf("0")                                           // = 0
 
             val cursor = db.query(
                 DatabaseConstants.GUEST.TABLE_NAME, //Nome da tabela
                 projection,                         //Quais as colunas que serão selecionadas
-                selection,                          //Selection nulo
+                selection,
                 args,                               //Argumentos de seleção nulos
                 null,                       //Group by nulo
                 null,                        //Cláusulá having nula
@@ -187,7 +187,7 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
                 while (cursor.moveToNext()) {
                     val id = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.ID))
                     val name = cursor.getString(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
-                    val presence = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
+                    val presence = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.PRESENCE))
 
                     list.add(GuestModel(id, name, presence == 1))
                 }

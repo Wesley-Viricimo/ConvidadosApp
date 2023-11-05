@@ -1,5 +1,6 @@
 package com.example.convidadosapp.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.convidadosapp.constants.DatabaseConstants
 import com.example.convidadosapp.databinding.FragmentAllGuestsBinding
 import com.example.convidadosapp.view.adapter.GuestsAdapter
 import com.example.convidadosapp.view.listener.OnGuestListener
@@ -34,7 +36,13 @@ class AllGuestFragment : Fragment() {
 
         val listener = object : OnGuestListener { //Classe anônima
             override fun onClick(id: Int) { //Recebendo o id da view holder
-                Toast.makeText(context, "Teste", Toast.LENGTH_SHORT).show()
+                val intent  = Intent(context, GuestFormActivity::class.java)
+
+                val bundle = Bundle()
+                bundle.putInt(DatabaseConstants.GUEST.ID, id)
+                intent.putExtras(bundle) //Quando activity for inicializada, essas informações serão passadas para ela
+
+                startActivity(intent)
             }
 
             override fun onDelete(id: Int) { //Recebendo o id da view holder

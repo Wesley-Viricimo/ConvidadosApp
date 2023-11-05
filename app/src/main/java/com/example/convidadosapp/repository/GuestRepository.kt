@@ -199,4 +199,43 @@ class GuestRepository private constructor(context: Context) { //Construtor fecha
         return list
     }
 
+    fun get(id: Int) : GuestModel? {
+        var guest : GuestModel? = null
+
+        try {
+            val db = guestDataBase.readableDatabase //readableDatabase serve para operações de leitura do banco de dados, ou seja, select
+            val projection = arrayOf(
+                DatabaseConstants.GUEST.COLUMNS.ID,
+                DatabaseConstants.GUEST.COLUMNS.NAME,
+                DatabaseConstants.GUEST.COLUMNS.PRESENCE
+            )
+
+            val selection = DatabaseConstants.GUEST.COLUMNS.ID + " = ?" //Serão atualizados os registros onde o id for igual ao id informado por parâmetro
+            val args = arrayOf(id.toString()) //Através dos argumentos que serão atualizados os registros, ou seja, será atualizado todos os registros onde o id for igual ao id informado pelo usuário
+
+            val cursor = db.query(
+                DatabaseConstants.GUEST.TABLE_NAME, //Nome da tabela
+                projection,                         //Quais as colunas que serão selecionadas
+                selection,
+                args,
+                null,                       //Group by nulo
+                null,                        //Cláusulá having nula
+                null)                       //Order by nulo
+
+            if (cursor != null && cursor.count > 0) {
+                while (cursor.moveToNext()) {
+                    val name = cursor.getString(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
+                    val presence = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.GUEST.COLUMNS.NAME))
+
+                    guest = (GuestModel(id, name, presence == 1))
+                }
+            }
+            cursor.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return guest
+        }
+        return guest
+    }
+
 }
